@@ -104,6 +104,8 @@ function drawCopChart(data, pump, water) {
     }
   }, {
     responsive: true
+	displayModeBar: false,
+	scrollZoom: false
   });
 }
 
