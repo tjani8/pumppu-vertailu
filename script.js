@@ -24,73 +24,133 @@ Papa.parse("data.csv", {
 });
 
 function initControls() {
+  const controls = document.getElementById("comparisonControls");
 
-  const pumpSelect = document.getElementById("pumpSelect");
-	
-  const waterSelect = document.getElementById("waterSelect");
+  controls.innerHTML = "";
 
-  const pumps = [...new Set(rawData.map(r => r.pumppu))];
-  const waters = [...new Set(rawData.map(r => r.vesi))];
+  const pumps = [...new Set(rawData.map(r => r.pumppu))]
+    .filter(Boolean)
+    .sort();
 
-  pumps.forEach(p => {
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement("div");
+    row.className = "control-card comparison-row";
+
+    const label = document.createElement("label");
+    label.textContent = `Vertailu ${i + 1}`;
+
+    const pumpSelect = document.createElement("select");
+    pumpSelect.id = `pumpSelect${i}`;
+    pumpSelect.className = "pump-select";
+
+    const emptyPump = document.createElement("option");
+    emptyPump.value = "";
+    emptyPump.textContent = "Ei valintaa";
+    pumpSelect.appendChild(emptyPump);
+
+    pumps.forEach(pump => {
+      const option = document.createElement("option");
+      option.value = pump;
+      option.textContent = pump;
+      pumpSelect.appendChild(option);
+    });
+
+    const waterSelect = document.createElement("select");
+    waterSelect.id = `waterSelect${i}`;
+    waterSelect.className = "water-select";
+
+    row.appendChild(label);
+    row.appendChild(pumpSelect);
+    row.appendChild(waterSelect);
+
+    controls.appendChild(row);
+
+    pumpSelect.addEventListener("change", () => {
+      updateWaterOptions(i);
+      updateCharts();
+    });
+
+    waterSelect.addEventListener("change", updateCharts);
+  }
+
+  document.getElementById("pumpSelect0").value = pumps[0] || "";
+  updateWaterOptions(0);
+
+  updateCharts();
+}
+
+function updateWaterOptions(index) {
+  const pumpSelect = document.getElementById(`pumpSelect${index}`);
+  const waterSelect = document.getElementById(`waterSelect${index}`);
+
+  const selectedPump = pumpSelect.value;
+  const previousWater = waterSelect.value;
+
+  waterSelect.innerHTML = "";
+
+  if (!selectedPump) {
     const option = document.createElement("option");
-    option.value = p;
-    option.textContent = p;
-    pumpSelect.appendChild(option);
-  });
+    option.value = "";
+    option.textContent = "-";
+    waterSelect.appendChild(option);
+    return;
+  }
 
-  waters.forEach(w => {
+  const waters = [...new Set(
+    rawData
+      .filter(r => r.pumppu === selectedPump)
+      .map(r => r.vesi)
+  )].filter(Boolean).sort();
+
+  waters.forEach(water => {
     const option = document.createElement("option");
-    option.value = w;
-    option.textContent = w;
+    option.value = water;
+    option.textContent = water;
     waterSelect.appendChild(option);
   });
 
-  if (pumpSelect.options.length > 0) {
-  pumpSelect.options[0].selected = true;
+  if (waters.includes(previousWater)) {
+    waterSelect.value = previousWater;
+  } else if (waters.length > 0) {
+    waterSelect.value = waters[0];
   }
-  
-  pumpSelect.addEventListener("change", updateCharts);
-  waterSelect.addEventListener("change", updateCharts);
 }
 
 function updateCharts() {
+  const selections = [];
 
-  const pumpSelect = document.getElementById("pumpSelect");
-  const water = document.getElementById("waterSelect").value;
+  for (let i = 0; i < 6; i++) {
+    const pump = document.getElementById(`pumpSelect${i}`).value;
+    const water = document.getElementById(`waterSelect${i}`).value;
 
-  const selectedPumps = [...pumpSelect.selectedOptions]
-    .map(option => option.value);
+    if (pump && water) {
+      selections.push({ pump, water });
+    }
+  }
 
-  const filtered = rawData
-    .filter(r =>
-      selectedPumps.includes(r.pumppu) &&
-      r.vesi === water
-    )
-    .sort((a, b) => a.ulko - b.ulko);
-
-  drawCopChart(filtered, water);
-  drawPowerChart(filtered, water);
+  drawCopChart(selections);
+  drawPowerChart(selections);
 }
 
-function drawCopChart(data, water) {
+function drawCopChart(selections) {
 
-  const pumps = [...new Set(data.map(d => d.pumppu))];
+  const traces = selections.map(selection => {
 
-  const traces = pumps.map(pump => {
-
-    const pumpData = data
-      .filter(d => d.pumppu === pump)
+    const pumpData = rawData
+      .filter(d =>
+        d.pumppu === selection.pump &&
+        d.vesi === selection.water &&
+        !isNaN(d.cop)
+      )
       .sort((a, b) => a.ulko - b.ulko);
 
     return {
-
       x: pumpData.map(d => d.ulko),
       y: pumpData.map(d => d.cop),
 
       mode: "lines+markers",
 
-      name: pump,
+      name: `${selection.pump} / ${selection.water}`,
 
       hovertemplate:
         "<b>%{fullData.name}</b><br>" +
@@ -106,7 +166,6 @@ function drawCopChart(data, water) {
       marker: {
         size: 8
       }
-
     };
   });
 
@@ -114,7 +173,7 @@ function drawCopChart(data, water) {
 
     dragmode: false,
 
-    title: `COP (${water})`,
+    title: "COP vertailu",
 
     paper_bgcolor: "#1f2937",
     plot_bgcolor: "#1f2937",
@@ -138,33 +197,32 @@ function drawCopChart(data, water) {
     }
 
   }, {
-
     responsive: true,
     displayModeBar: false,
     scrollZoom: false,
     doubleClick: false
-
   });
 }
 
-function drawPowerChart(data, water) {
+function drawPowerChart(selections) {
 
-  const pumps = [...new Set(data.map(d => d.pumppu))];
+  const traces = selections.map(selection => {
 
-  const traces = pumps.map(pump => {
-
-    const pumpData = data
-      .filter(d => d.pumppu === pump)
+    const pumpData = rawData
+      .filter(d =>
+        d.pumppu === selection.pump &&
+        d.vesi === selection.water &&
+        !isNaN(d.tuotto)
+      )
       .sort((a, b) => a.ulko - b.ulko);
 
     return {
-
       x: pumpData.map(d => d.ulko),
       y: pumpData.map(d => d.tuotto),
 
       mode: "lines+markers",
 
-      name: pump,
+      name: `${selection.pump} / ${selection.water}`,
 
       hovertemplate:
         "<b>%{fullData.name}</b><br>" +
@@ -180,7 +238,6 @@ function drawPowerChart(data, water) {
       marker: {
         size: 8
       }
-
     };
   });
 
@@ -188,7 +245,7 @@ function drawPowerChart(data, water) {
 
     dragmode: false,
 
-    title: `Tuotto (${water})`,
+    title: "Tuotto vertailu",
 
     paper_bgcolor: "#1f2937",
     plot_bgcolor: "#1f2937",
@@ -212,11 +269,9 @@ function drawPowerChart(data, water) {
     }
 
   }, {
-
     responsive: true,
     displayModeBar: false,
     scrollZoom: false,
     doubleClick: false
-
   });
 }
