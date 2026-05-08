@@ -6,7 +6,7 @@ Papa.parse("data.csv", {
   complete: function(results) {
 	console.log(results.data);
 
-rawData = results.data.map(row => ({
+	rawData = results.data.map(row => ({
 	  pumppu: row["Pumppu"],
 	  vesi: row["Vesi"],
 	  ulko: Number(row["Ulko"]),
