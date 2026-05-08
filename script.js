@@ -7,8 +7,8 @@ Papa.parse("data.csv", {
 
     rawData = results.data.map(row => ({
       pumppu: row["Pumppu"],
-      vesi: row["Pumppu_2"] || row[Object.keys(row)[1]],
-      ulko: Number(row[Object.keys(row)[2]]),
+      vesi: row["vesi"],
+      ulko: Number["Ulko"],
       tuotto: Number(row["Tuotto"]),
       input: Number(row["Input"]),
       cop: Number(row["COP"]),
