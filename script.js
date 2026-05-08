@@ -102,9 +102,6 @@ function drawCopChart(data, pump, water) {
       title: "COP",
       gridcolor: "#374151"
     }
-	hovertemplate:
-		"Ulko: %{x}°C<br>" +
-		"Tuotto: %{y:.1f} kW<extra></extra>",
   }, {
     responsive: true
   });
@@ -116,6 +113,11 @@ function drawPowerChart(data, pump, water) {
     x: data.map(d => d.ulko),
     y: data.map(d => d.tuotto),
     mode: "lines+markers",
+	
+	hovertemplate:
+		"Ulko: %{x}°C<br>" +
+		"COP: %{y:.2f}<extra></extra>",
+	
     name: pump,
     line: {
       shape: "spline",
