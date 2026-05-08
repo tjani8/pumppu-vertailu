@@ -26,6 +26,10 @@ Papa.parse("data.csv", {
 function initControls() {
 
   const pumpSelect = document.getElementById("pumpSelect");
+  
+  const selectedPumps = [...pumpSelect.selectedOptions]
+    .map(option => option.value);
+	
   const waterSelect = document.getElementById("waterSelect");
 
   const pumps = [...new Set(rawData.map(r => r.pumppu))];
@@ -55,59 +59,87 @@ function updateCharts() {
   const water = document.getElementById("waterSelect").value;
 
   const filtered = rawData
-    .filter(r => r.pumppu === pump && r.vesi === water)
+    .filter(r =>
+	  selectedPumps.includes(r.pumppu) &&
+	  r.vesi === water
+	)
     .sort((a, b) => a.ulko - b.ulko);
 
-  drawCopChart(filtered, pump, water);
+  drawCopChart(filtered, water);
   drawPowerChart(filtered, pump, water);
 }
 
-function drawCopChart(data, pump, water) {
+function drawCopChart(data, water) {
 
-	const trace = {
-	  x: data.map(d => d.ulko),
-	  y: data.map(d => d.cop),
+  const pumps = [...new Set(data.map(d => d.pumppu))];
 
-	  mode: "lines+markers",
+  const traces = pumps.map(pump => {
 
-	  hovertemplate:
-		"Ulko: %{x}°C<br>" +
-		"COP: %{y:.2f}<extra></extra>",
+    const pumpData = data
+      .filter(d => d.pumppu === pump)
+      .sort((a, b) => a.ulko - b.ulko);
 
-	  name: pump,
+    return {
 
-	  line: {
-		shape: "spline",
-		smoothing: 0.6,
-		width: 4
-	  },
+      x: pumpData.map(d => d.ulko),
+      y: pumpData.map(d => d.cop),
 
-	  marker: {
-		size: 8
-	  }
-	};
+      mode: "lines+markers",
 
-  Plotly.newPlot("copChart", [trace], {
-	dragmode: false,
-    title: `${pump} – COP (${water})`,
+      name: pump,
+
+      hovertemplate:
+        "<b>%{fullData.name}</b><br>" +
+        "Ulko: %{x}°C<br>" +
+        "COP: %{y:.2f}<extra></extra>",
+
+      line: {
+        shape: "spline",
+        smoothing: 0.6,
+        width: 4
+      },
+
+      marker: {
+        size: 8
+      }
+
+    };
+  });
+
+  Plotly.newPlot("copChart", traces, {
+
+    dragmode: false,
+
+    title: `COP (${water})`,
+
     paper_bgcolor: "#1f2937",
     plot_bgcolor: "#1f2937",
+
     font: {
       color: "white"
     },
+
+    legend: {
+      orientation: "h"
+    },
+
     xaxis: {
       title: "Ulkolämpötila °C",
       gridcolor: "#374151"
     },
+
     yaxis: {
       title: "COP",
       gridcolor: "#374151"
     }
+
   }, {
+
     responsive: true,
-	displayModeBar: false,
-	scrollZoom: false,
-	doubleClick: false
+    displayModeBar: false,
+    scrollZoom: false,
+    doubleClick: false
+
   });
 }
 
