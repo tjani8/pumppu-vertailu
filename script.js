@@ -26,9 +26,6 @@ Papa.parse("data.csv", {
 function initControls() {
 
   const pumpSelect = document.getElementById("pumpSelect");
-  
-  const selectedPumps = [...pumpSelect.selectedOptions]
-    .map(option => option.value);
 	
   const waterSelect = document.getElementById("waterSelect");
 
@@ -49,24 +46,31 @@ function initControls() {
     waterSelect.appendChild(option);
   });
 
+  if (pumpSelect.options.length > 0) {
+  pumpSelect.options[0].selected = true;
+  }
+  
   pumpSelect.addEventListener("change", updateCharts);
   waterSelect.addEventListener("change", updateCharts);
 }
 
 function updateCharts() {
 
-  const pump = document.getElementById("pumpSelect").value;
+  const pumpSelect = document.getElementById("pumpSelect");
   const water = document.getElementById("waterSelect").value;
+
+  const selectedPumps = [...pumpSelect.selectedOptions]
+    .map(option => option.value);
 
   const filtered = rawData
     .filter(r =>
-	  selectedPumps.includes(r.pumppu) &&
-	  r.vesi === water
-	)
+      selectedPumps.includes(r.pumppu) &&
+      r.vesi === water
+    )
     .sort((a, b) => a.ulko - b.ulko);
 
   drawCopChart(filtered, water);
-  drawPowerChart(filtered, pump, water);
+  drawPowerChart(filtered, water);
 }
 
 function drawCopChart(data, water) {
@@ -143,48 +147,76 @@ function drawCopChart(data, water) {
   });
 }
 
-function drawPowerChart(data, pump, water) {
+function drawPowerChart(data, water) {
 
-  const trace = {
-    x: data.map(d => d.ulko),
-    y: data.map(d => d.tuotto),
-    mode: "lines+markers",
-	
-	hovertemplate:
-		"Ulko: %{x}°C<br>" +
-		"COP: %{y:.2f}<extra></extra>",
-	
-    name: pump,
-    line: {
-      shape: "spline",
-      smoothing: 0.6,
-      width: 4
-    },
-    marker: {
-      size: 8
-    }
-  };
+  const pumps = [...new Set(data.map(d => d.pumppu))];
 
-  Plotly.newPlot("powerChart", [trace], {
-	dragmode: false,
-    title: `${pump} – Tuotto (${water})`,
+  const traces = pumps.map(pump => {
+
+    const pumpData = data
+      .filter(d => d.pumppu === pump)
+      .sort((a, b) => a.ulko - b.ulko);
+
+    return {
+
+      x: pumpData.map(d => d.ulko),
+      y: pumpData.map(d => d.tuotto),
+
+      mode: "lines+markers",
+
+      name: pump,
+
+      hovertemplate:
+        "<b>%{fullData.name}</b><br>" +
+        "Ulko: %{x}°C<br>" +
+        "Tuotto: %{y:.1f} kW<extra></extra>",
+
+      line: {
+        shape: "spline",
+        smoothing: 0.6,
+        width: 4
+      },
+
+      marker: {
+        size: 8
+      }
+
+    };
+  });
+
+  Plotly.newPlot("powerChart", traces, {
+
+    dragmode: false,
+
+    title: `Tuotto (${water})`,
+
     paper_bgcolor: "#1f2937",
     plot_bgcolor: "#1f2937",
+
     font: {
       color: "white"
     },
+
+    legend: {
+      orientation: "h"
+    },
+
     xaxis: {
       title: "Ulkolämpötila °C",
       gridcolor: "#374151"
     },
+
     yaxis: {
       title: "Tuotto kW",
       gridcolor: "#374151"
     }
+
   }, {
+
     responsive: true,
-	displayModeBar: false,
-	scrollZoom: false,
-	doubleClick: false
+    displayModeBar: false,
+    scrollZoom: false,
+    doubleClick: false
+
   });
 }
