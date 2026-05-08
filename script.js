@@ -15,13 +15,13 @@ Papa.parse("data.csv", {
 	  cop: Number(row["COP"]),
 	  huomautus: row["Huomautus"]
 	})).filter(r => !isNaN(r.ulko));
-
+	
+	console.log(rawData);
+	
     initControls();
     updateCharts();
   }
 });
-
-console.log(rawData);
 
 function initControls() {
 
@@ -64,20 +64,28 @@ function updateCharts() {
 
 function drawCopChart(data, pump, water) {
 
-  const trace = {
-    x: data.map(d => d.ulko),
-    y: data.map(d => d.cop),
-    mode: "lines+markers",
-    name: pump,
-    line: {
-      shape: "spline",
-      smoothing: 0.6,
-      width: 4
-    },
-    marker: {
-      size: 8
-    }
-  };
+	const trace = {
+	  x: data.map(d => d.ulko),
+	  y: data.map(d => d.cop),
+
+	  mode: "lines+markers",
+
+	  hovertemplate:
+		"Ulko: %{x}°C<br>" +
+		"COP: %{y:.2f}<extra></extra>",
+
+	  name: pump,
+
+	  line: {
+		shape: "spline",
+		smoothing: 0.6,
+		width: 4
+	  },
+
+	  marker: {
+		size: 8
+	  }
+	};
 
   Plotly.newPlot("copChart", [trace], {
     title: `${pump} – COP (${water})`,
@@ -94,6 +102,9 @@ function drawCopChart(data, pump, water) {
       title: "COP",
       gridcolor: "#374151"
     }
+	hovertemplate:
+		"Ulko: %{x}°C<br>" +
+		"Tuotto: %{y:.1f} kW<extra></extra>",
   }, {
     responsive: true
   });
@@ -132,6 +143,8 @@ function drawPowerChart(data, pump, water) {
       gridcolor: "#374151"
     }
   }, {
-    responsive: true
+    responsive: true,
+	displayModeBar: false,
+	scrollZoom: false
   });
 }
