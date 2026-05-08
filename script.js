@@ -88,6 +88,7 @@ function drawCopChart(data, pump, water) {
 	};
 
   Plotly.newPlot("copChart", [trace], {
+	dragmode: false,
     title: `${pump} – COP (${water})`,
     paper_bgcolor: "#1f2937",
     plot_bgcolor: "#1f2937",
@@ -103,9 +104,10 @@ function drawCopChart(data, pump, water) {
       gridcolor: "#374151"
     }
   }, {
-    responsive: true
+    responsive: true,
 	displayModeBar: false,
-	scrollZoom: false
+	scrollZoom: false,
+	doubleClick: false
   });
 }
 
@@ -132,6 +134,7 @@ function drawPowerChart(data, pump, water) {
   };
 
   Plotly.newPlot("powerChart", [trace], {
+	dragmode: false,
     title: `${pump} – Tuotto (${water})`,
     paper_bgcolor: "#1f2937",
     plot_bgcolor: "#1f2937",
@@ -149,6 +152,7 @@ function drawPowerChart(data, pump, water) {
   }, {
     responsive: true,
 	displayModeBar: false,
-	scrollZoom: false
+	scrollZoom: false,
+	doubleClick: false
   });
 }
