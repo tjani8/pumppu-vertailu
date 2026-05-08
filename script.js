@@ -7,14 +7,14 @@ Papa.parse("data.csv", {
 	console.log(results.data);
 
     rawData = results.data.map(row => ({
-      pumppu: row["Pumppu"],
-      vesi: row["Vesi"],
-      ulko: Number(row["Ulko"]),
-      tuotto: Number(row["Tuotto"]),
-      input: Number(row["Input"]),
-      cop: Number(row["COP"]),
-      huomautus: row["Huomautus"]
-    })).filter(r => !isNaN(r.ulko));
+	  pumppu: row["Pumppu"],
+	  vesi: row["Vesi"],
+	  ulko: Number(row["Ulko"]),
+	  tuotto: Number(row["Tuotto"]),
+	  input: Number(row["Input"]),
+	  cop: Number(row["COP"]),
+	  huomautus: row["Huomautus"]
+	})).filter(r => !isNaN(r.ulko));
 
     initControls();
     updateCharts();
@@ -88,4 +88,10 @@ function drawCopChart(data, pump, water) {
       title: "Ulkolämpötila °C",
       gridcolor: "#374151"
     },
+    yaxis: {
+      title: "COP",
+      gridcolor: "#374151"
+    }
+  }, {
+    responsive: true
 }
