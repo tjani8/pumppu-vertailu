@@ -28,7 +28,8 @@ function copyShareLink() {
 }
 
 
-Papa.parse("data.csv", {
+// Papa.parse("data.csv", {
+Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vTzUjGukV__4N0fx4mUCQuTIt_Fskg7jPqHNawq_bF2H4cA4i_ur5nyw9QPtyptMfe8PaRHl4upB1HS/pub?gid=893857219&single=true&output=csv", {
   download: true,
   header: true,
   complete: function(results) {
@@ -38,7 +39,7 @@ Papa.parse("data.csv", {
 	  pumppu: row["Pumppu"],
 	  vesi: row["Vesi"],
 	  ulko: Number(row["Ulko"]),
-	  tuotto: Number(row["Tuotto"]),
+	  teho: Number(row["Teho"]),
 	  input: Number(row["Input"]),
 	  cop: Number(row["COP"]),
 	  huomautus: row["Huomautus"]
@@ -322,7 +323,7 @@ function drawCopChart(selections) {
     return {
       x: pumpData.map(d => d.ulko),
       y: pumpData.map(d => d.cop),
-	  customdata: pumpData.map(d => [d.tuotto]),
+	  customdata: pumpData.map(d => [d.teho]),
 
       mode: "lines+markers",
 
@@ -424,13 +425,13 @@ function drawPowerChart(selections) {
       .filter(d =>
         d.pumppu === selection.pump &&
         d.vesi === selection.water &&
-        !isNaN(d.tuotto)
+        !isNaN(d.teho)
       )
       .sort((a, b) => a.ulko - b.ulko);
 
     return {
       x: pumpData.map(d => d.ulko),
-      y: pumpData.map(d => d.tuotto),
+      y: pumpData.map(d => d.teho),
 	  customdata: pumpData.map(d => [d.cop]),
 
       mode: "lines+markers",
