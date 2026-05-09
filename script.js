@@ -42,10 +42,20 @@ function initControls() {
     const label = document.createElement("label");
     label.textContent = `Pumppu ${i + 1}`;
 	
+	const filterWrapper = document.createElement("div");
+	filterWrapper.className = "filter-wrapper";
+
 	const filterInput = document.createElement("input");
 	filterInput.id = `pumpFilter${i}`;
 	filterInput.className = "pump-filter";
 	filterInput.placeholder = "Suodata pumppuja...";
+
+	const clearButton = document.createElement("span");
+	clearButton.className = "clear-filter";
+	clearButton.innerHTML = "×";
+
+	filterWrapper.appendChild(filterInput);
+	filterWrapper.appendChild(clearButton);
 
     const pumpSelect = document.createElement("select");
     pumpSelect.id = `pumpSelect${i}`;
@@ -68,13 +78,18 @@ function initControls() {
     waterSelect.className = "water-select";
 
     row.appendChild(label);
-	row.appendChild(filterInput);
+	row.appendChild(filterWrapper);
     row.appendChild(pumpSelect);
     row.appendChild(waterSelect);
 
     controls.appendChild(row);
 	
 	filterInput.addEventListener("input", () => {
+	  refreshPumpOptions(i);
+	});
+	
+	clearButton.addEventListener("click", () => {
+	  filterInput.value = "";
 	  refreshPumpOptions(i);
 	});
 
