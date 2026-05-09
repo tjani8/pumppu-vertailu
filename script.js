@@ -76,11 +76,17 @@ function initControls() {
     const waterSelect = document.createElement("select");
     waterSelect.id = `waterSelect${i}`;
     waterSelect.className = "water-select";
+	
+	const noteDiv = document.createElement("div");
+	noteDiv.id = `note${i}`;
+	noteDiv.className = "note";
+	noteDiv.textContent = "";
 
     row.appendChild(label);
 	row.appendChild(filterWrapper);
     row.appendChild(pumpSelect);
     row.appendChild(waterSelect);
+	row.appendChild(noteDiv);
 
     controls.appendChild(row);
 	
@@ -98,7 +104,10 @@ function initControls() {
       updateCharts();
     });
 
-    waterSelect.addEventListener("change", updateCharts);
+    waterSelect.addEventListener("change", () => {
+	  updateNote(i);
+	  updateCharts();
+	});
   }
 
   document.getElementById("pumpSelect0").value = pumps[0] || "";
@@ -174,9 +183,34 @@ function updateWaterOptions(index) {
 
   if (waters.includes(previousWater)) {
     waterSelect.value = previousWater;
+  } else if (waters.includes("35 °C")) {
+	  waterSelect.value = "35 °C";
   } else if (waters.length > 0) {
     waterSelect.value = waters[0];
   }
+  updateNote(index);
+}
+
+function updateNote(index) {
+  const pump = document.getElementById(`pumpSelect${index}`).value;
+  const water = document.getElementById(`waterSelect${index}`).value;
+  const noteDiv = document.getElementById(`note${index}`);
+
+  if (!pump || !water) {
+    noteDiv.textContent = "";
+    return;
+  }
+
+  const notes = [...new Set(
+    rawData
+      .filter(r => r.pumppu === pump && r.vesi === water)
+      .map(r => r.huomautus)
+      .filter(Boolean)
+  )];
+
+  noteDiv.textContent = notes.length > 0
+    ? `Huom: ${notes.join(" / ")}`
+    : "";
 }
 
 function updateCharts() {
