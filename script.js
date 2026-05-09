@@ -329,6 +329,8 @@ function drawCopChart(selections) {
   });
 
   Plotly.newPlot("copChart", traces, {
+	  
+	enableTraceHighlight("copChart");
 
     dragmode: false,
 
@@ -368,9 +370,9 @@ function drawCopChart(selections) {
     yaxis: {
       title: "COP",
       gridcolor: "#8e9aad",
-	  dtick: 0.5,
+	  dtick: 1,
 	  minor: {
-	    dtick: 0.1,
+	    dtick: 0.5,
 		gridcolor: "#374151",
 		showgrid: true
 	  }
@@ -433,6 +435,8 @@ function drawPowerChart(selections) {
   });
 
   Plotly.newPlot("powerChart", traces, {
+	  
+	enableTraceHighlight("powerChart");
 
     dragmode: false,
 
@@ -474,7 +478,7 @@ function drawPowerChart(selections) {
       gridcolor: "#8e9aad",
 	  dtick: 2,
 	  minor: {
-	    dtick: 0.5,
+	    dtick: 1,
 		gridcolor: "#374151",
 		showgrid: true
 	  }
@@ -485,5 +489,48 @@ function drawPowerChart(selections) {
     displayModeBar: false,
     scrollZoom: false,
     doubleClick: false
+  });
+}
+
+
+function enableTraceHighlight(chartId) {
+
+  const chart = document.getElementById(chartId);
+
+  chart.on('plotly_hover', function(data) {
+
+    const hoveredTrace = data.points[0].curveNumber;
+
+    const update = {
+      opacity: [],
+      'line.width': []
+    };
+
+    const traceCount = data.graphDiv.data.length;
+
+    for (let i = 0; i < traceCount; i++) {
+
+      if (i === hoveredTrace) {
+        update.opacity.push(1.0);
+        update['line.width'].push(6);
+      } else {
+        update.opacity.push(0.15);
+        update['line.width'].push(3);
+      }
+    }
+
+    Plotly.restyle(chart, update);
+  });
+
+  chart.on('plotly_unhover', function(data) {
+
+    const traceCount = data.graphDiv.data.length;
+
+    const update = {
+      opacity: Array(traceCount).fill(1),
+      'line.width': Array(traceCount).fill(4)
+    };
+
+    Plotly.restyle(chart, update);
   });
 }
