@@ -328,9 +328,7 @@ function drawCopChart(selections) {
     };
   });
 
-  Plotly.newPlot("copChart", traces, layout, config);
-
-	enableTraceHighlight("copChart");
+  Plotly.newPlot("copChart", traces, {
 
     dragmode: false,
 
@@ -378,7 +376,11 @@ function drawCopChart(selections) {
 	  }
     }
 
-  }, {
+  },
+  
+  enableTraceHighlight("copChart");
+  
+  {
     responsive: true,
     displayModeBar: false,
     scrollZoom: false,
@@ -434,10 +436,7 @@ function drawPowerChart(selections) {
     };
   });
 
-
-  Plotly.newPlot("powerChart", traces, layout, config);
-
-	enableTraceHighlight("powerChart");
+  Plotly.newPlot("powerChart", traces, {
 
     dragmode: false,
 
@@ -485,7 +484,9 @@ function drawPowerChart(selections) {
 	  }
     }
 
-  }, {
+  },
+  enableTraceHighlight("powerChart");
+  {
     responsive: true,
     displayModeBar: false,
     scrollZoom: false,
