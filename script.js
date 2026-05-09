@@ -335,6 +335,7 @@ function updateCharts() {
   drawCopChart(selections);
   drawCustomLegend(selections);
   updateUrlFromSelections();
+  updateStats(selections);
 }
 
 function drawCopChart(selections) {
@@ -694,4 +695,32 @@ function updateVisibleComparisonsFromUrl() {
     button.style.display =
       visibleComparisons >= maxComparisons ? "none" : "inline-block";
   }
+}
+
+
+function updateStats(selections = []) {
+  const statsGrid = document.getElementById("statsGrid");
+
+  const pumpCount = new Set(rawData.map(r => r.pumppu).filter(Boolean)).size;
+  const pointCount = rawData.filter(r => !isNaN(r.ulko)).length;
+
+  const waters = [...new Set(rawData.map(r => r.vesi).filter(Boolean))]
+    .sort()
+    .join(", ");
+
+  const selectedCount = selections.length;
+
+  const cards = [
+    { label: "Pumppuja", value: pumpCount },
+    { label: "Datapisteitä", value: pointCount },
+    { label: "Vedenlämpöjä", value: waters },
+    { label: "Valittuja", value: selectedCount }
+  ];
+
+  statsGrid.innerHTML = cards.map(card => `
+    <div class="stat-card">
+      <div class="stat-label">${card.label}</div>
+      <div class="stat-value">${card.value}</div>
+    </div>
+  `).join("");
 }
