@@ -37,7 +37,7 @@ function initControls() {
     row.className = "control-card comparison-row";
 
     const label = document.createElement("label");
-    label.textContent = `Vertailu ${i + 1}`;
+    label.textContent = `Pumppu ${i + 1}`;
 
     const pumpSelect = document.createElement("select");
     pumpSelect.id = `pumpSelect${i}`;
@@ -183,8 +183,17 @@ function drawCopChart(selections) {
     },
 
     legend: {
-      orientation: "h"
-    },
+	  orientation: "h",
+	  x: 0,
+	  y: -0.25
+	},
+	
+	margin: {
+	    l: 70,
+		r: 30,
+		t: 70,
+		b: 130
+	},
 
     xaxis: {
       title: "Ulkolämpötila °C",
@@ -237,7 +246,14 @@ function drawPowerChart(selections) {
 
       marker: {
         size: 8
-      }
+      },
+	  
+	  margin: {
+	    l: 70,
+		r: 30,
+		t: 70,
+		b: 130
+	  }	  
     };
   });
 
@@ -257,6 +273,13 @@ function drawPowerChart(selections) {
     legend: {
       orientation: "h"
     },
+	
+	margin: {
+	    l: 70,
+		r: 30,
+		t: 70,
+		b: 130
+	},
 
     xaxis: {
       title: "Ulkolämpötila °C",
