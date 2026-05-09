@@ -1,5 +1,7 @@
 let rawData = [];
 let allPumps = [];
+let visibleComparisons = 2;
+const maxComparisons = 6;
 const comparisonColors = [
   "#60a5fa",
   "#fb923c",
@@ -65,7 +67,9 @@ function initControls() {
 
   for (let i = 0; i < 6; i++) {
     const row = document.createElement("div");
+	row.id = `comparisonRow${i}`;
     row.className = "control-card comparison-row";
+	row.style.display = i < visibleComparisons ? "flex" : "none";
 	row.style.borderLeft = `6px solid ${comparisonColors[i]}`;
 
     const label = document.createElement("label");
@@ -140,13 +144,38 @@ function initControls() {
   }
 
   if (window.location.search) {
-    applySelectionsFromUrl();
+	updateVisibleComparisonsFromUrl();
+	applySelectionsFromUrl();
   } else {
-    document.getElementById("pumpSelect0").value = pumps[0] || "";
-    updateWaterOptions(0);
+	document.getElementById("pumpSelect0").value = pumps[0] || "";
+	updateWaterOptions(0);
   }
 
+
   updateCharts();
+  
+  document.getElementById("addComparisonButton")
+  .addEventListener("click", () => {
+
+    if (visibleComparisons < maxComparisons) {
+
+      const row =
+        document.getElementById(
+          `comparisonRow${visibleComparisons}`
+        );
+
+      row.style.display = "flex";
+
+      visibleComparisons++;
+
+      if (visibleComparisons >= maxComparisons) {
+        document.getElementById(
+          "addComparisonButton"
+        ).style.display = "none";
+      }
+    }
+  updateCharts();
+  });
 
 }
 
@@ -632,4 +661,37 @@ function getChartMargin() {
     t: 70,
     b: 80
   };
+}
+
+
+function updateVisibleComparisonsFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+
+  let highestUsedIndex = 0;
+
+  for (let i = 0; i < maxComparisons; i++) {
+    const pump = params.get(`p${i + 1}`);
+    const water = params.get(`w${i + 1}`);
+
+    if (pump || water) {
+      highestUsedIndex = i + 1;
+    }
+  }
+
+  visibleComparisons = Math.max(2, highestUsedIndex);
+
+  for (let i = 0; i < maxComparisons; i++) {
+    const row = document.getElementById(`comparisonRow${i}`);
+
+    if (row) {
+      row.style.display = i < visibleComparisons ? "flex" : "none";
+    }
+  }
+
+  const button = document.getElementById("addComparisonButton");
+
+  if (button) {
+    button.style.display =
+      visibleComparisons >= maxComparisons ? "none" : "inline-block";
+  }
 }
