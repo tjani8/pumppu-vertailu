@@ -160,19 +160,15 @@ function initControls() {
 	applySelectionsFromUrl();
   } else {
 	const defaults = [
-	  "Panasonic 12 kW T-CAP WH-MXC12J9E8 ",
+	  "Panasonic 12 kW T-CAP WH-MXC12J9E8",
 	  "Power World PW050-DKZLRS-E",
 	];
 
 	defaults.forEach((search, index) => {
-	  const pumpSelect =
-		document.getElementById(`pumpSelect${index}`);
-
+	  const pumpSelect = document.getElementById(`pumpSelect${index}`);
 	  if (!pumpSelect) return;
 
-	  const match =
-		[...pumpSelect.options]
-		  .find(option =>
+	  const match = [...pumpSelect.options].find(option =>
 			option.value.includes(search)
 		  );
 
