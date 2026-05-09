@@ -331,9 +331,9 @@ function drawCopChart(selections) {
 
   Plotly.newPlot("copChart", traces, {
 	  
-	hovermode: "closest",
-	hoverdistance: 30,
-	spikedistance: -1,
+	// hovermode: "closest",
+	// hoverdistance: 30,
+	// spikedistance: -1,
 	
 
     dragmode: false,
@@ -391,7 +391,7 @@ function drawCopChart(selections) {
     doubleClick: false
   });
   
-  enableTraceHighlight("copChart");
+  // enableTraceHighlight("copChart");
   
 }
 
@@ -448,9 +448,9 @@ function drawPowerChart(selections) {
     dragmode: false,
 	showlegend: false,
 	
-	hovermode: "closest",
-	hoverdistance: 30,
-	spikedistance: -1,
+	// hovermode: "closest",
+	// hoverdistance: 30,
+	// spikedistance: -1,
 	
 
     title: "Teho",
@@ -505,49 +505,52 @@ function drawPowerChart(selections) {
     doubleClick: false
   });
   
-  enableTraceHighlight("powerChart");  
+  // enableTraceHighlight("powerChart");  
 }
 
 
-function enableTraceHighlight(chartId) {
+// --------HOOVER LINE KOROSTUS-------
 
-  const chart = document.getElementById(chartId);
+// function enableTraceHighlight(chartId) {
 
-  chart.on("plotly_hover", function(eventData) {
+  // const chart = document.getElementById(chartId);
 
-    const hoveredTrace = eventData.points[0].curveNumber;
-    const traceCount = chart.data.length;
+  // chart.on("plotly_hover", function(eventData) {
 
-    const update = {
-      opacity: [],
-      "line.width": []
-    };
+    // const hoveredTrace = eventData.points[0].curveNumber;
+    // const traceCount = chart.data.length;
 
-    for (let i = 0; i < traceCount; i++) {
-      if (i === hoveredTrace) {
-        update.opacity.push(1.0);
-        update["line.width"].push(6);
-      } else {
-        update.opacity.push(0.5);
-        update["line.width"].push(3);
-      }
-    }
+    // const update = {
+      // opacity: [],
+      // "line.width": []
+    // };
 
-    Plotly.restyle(chart, update);
-  });
+    // for (let i = 0; i < traceCount; i++) {
+      // if (i === hoveredTrace) {
+        // update.opacity.push(1.0);
+        // update["line.width"].push(6);
+      // } else {
+        // update.opacity.push(0.5);
+        // update["line.width"].push(3);
+      // }
+    // }
 
-  chart.on("plotly_unhover", function() {
+    // Plotly.restyle(chart, update);
+  // });
 
-    const traceCount = chart.data.length;
+  // chart.on("plotly_unhover", function() {
 
-    const update = {
-      opacity: Array(traceCount).fill(1),
-      "line.width": Array(traceCount).fill(4)
-    };
+    // const traceCount = chart.data.length;
 
-    Plotly.restyle(chart, update);
-  });
-}
+    // const update = {
+      // opacity: Array(traceCount).fill(1),
+      // "line.width": Array(traceCount).fill(4)
+    // };
+
+    // Plotly.restyle(chart, update);
+  // });
+// }
+
 
 function drawCustomLegend(selections) {
   const legend = document.getElementById("customLegend");
@@ -577,7 +580,7 @@ function highlightTrace(index) {
     const traceCount = chart.data.length;
 
     Plotly.restyle(chart, {
-      opacity: Array.from({ length: traceCount }, (_, i) => i === index ? 1 : 0.15),
+      opacity: Array.from({ length: traceCount }, (_, i) => i === index ? 1 : 0.25),
       "line.width": Array.from({ length: traceCount }, (_, i) => i === index ? 6 : 3)
     });
   });

@@ -122,3 +122,14 @@ select {
 .legend-item:hover {
   background: #4b5563;
 }
+
+@media (max-width: 700px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+  #copChart,
+  #powerChart {
+    height: 380px;
+  }
+  
+}
