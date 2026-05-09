@@ -363,7 +363,7 @@ function drawCopChart(selections) {
     xaxis: {
       title: "Ulkolämpötila °C",
       gridcolor: "#8e9aad",
-	  zeroline: false
+	  zeroline: false,
 	  dtick: 5,
 	  minor: {
   	    dtick: 1,
@@ -477,7 +477,7 @@ function drawPowerChart(selections) {
     xaxis: {
       title: "Ulkolämpötila °C",
       gridcolor: "#8e9aad",
-	  zeroline: false
+	  zeroline: false,
 	  dtick: 5,
 	  minor: {
   	    dtick: 1,
