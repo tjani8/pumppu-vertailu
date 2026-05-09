@@ -135,7 +135,7 @@ select {
 }
 
 .legend-item:hover {
-  background: var(--accent-color);
+  background: var(--accent-hover);
 }
 
 @media (max-width: 700px) {
