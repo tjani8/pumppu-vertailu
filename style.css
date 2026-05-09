@@ -223,7 +223,7 @@ button:hover {
 
 input:focus,
 select:focus {
-  outline: 2px solid  var(--accent);
+  outline: 2px solid  var(--accent-hover);
   outline-offset: 2px;
 }
 
