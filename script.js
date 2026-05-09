@@ -334,7 +334,7 @@ function drawCopChart(selections) {
 	  hovermode: "closest",
 	  hoverdistance: 30,
 	  spikedistance: -1
-	}
+	},
 
     dragmode: false,
 
@@ -450,7 +450,7 @@ function drawPowerChart(selections) {
 	  hovermode: "closest",
 	  hoverdistance: 30,
 	  spikedistance: -1
-	}
+	},
 
     title: "Teho",
 
