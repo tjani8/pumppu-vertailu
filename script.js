@@ -376,16 +376,15 @@ function drawCopChart(selections) {
 	  }
     }
 
-  },
-  
-  enableTraceHighlight("copChart");
-  
-  {
+  }, {
     responsive: true,
     displayModeBar: false,
     scrollZoom: false,
     doubleClick: false
   });
+  
+  enableTraceHighlight("copChart");
+  
 }
 
 function drawPowerChart(selections) {
@@ -484,14 +483,14 @@ function drawPowerChart(selections) {
 	  }
     }
 
-  },
-  enableTraceHighlight("powerChart");
-  {
+  }, {
     responsive: true,
     displayModeBar: false,
     scrollZoom: false,
     doubleClick: false
   });
+  
+  enableTraceHighlight("powerChart");  
 }
 
 
