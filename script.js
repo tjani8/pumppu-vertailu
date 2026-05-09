@@ -156,20 +156,28 @@ function initControls() {
   }
 
   if (window.location.search) {
-	  updateVisibleComparisonsFromUrl();
-	  applySelectionsFromUrl();
+	updateVisibleComparisonsFromUrl();
+	applySelectionsFromUrl();
+  } else {
+	const defaults = [
+	  "WH-MXC12J9E8",
+	  "PW050-DKZLRS-E/S,1/3-v, MAX",
+	];
 
-	  const hasAnySelection = [...Array(maxComparisons).keys()].some(i =>
-		document.getElementById(`pumpSelect${i}`).value
-	  );
+	defaults.forEach((search, index) => {
+	  const pumpSelect = document.getElementById(`pumpSelect${index}`);
+	  if (!pumpSelect) return;
 
-	  if (!hasAnySelection) {
-		applyDefaultSelections();
+	  const match = [...pumpSelect.options].find(option =>
+			option.value.includes(search)
+		  );
+
+	  if (match) {
+		pumpSelect.value = match.value;
+		updateWaterOptions(index);
 	  }
-
-	} else {
-	  applyDefaultSelections();
-	}
+	});
+  }
   
   document.getElementById("addComparisonButton")
   .addEventListener("click", () => {
@@ -195,27 +203,6 @@ function initControls() {
   });
   
   updateCharts();
-}
-
-function applyDefaultSelections() {
-  const defaults = [
-    "WH-MXC12J9E8",
-	"PW050-DKZLRS-E/S,1/3-v, MAX",
-  ];
-
-  defaults.forEach((search, index) => {
-    const pumpSelect = document.getElementById(`pumpSelect${index}`);
-    if (!pumpSelect) return;
-
-    const match = [...pumpSelect.options].find(option =>
-      option.value.toLowerCase().includes(search.toLowerCase())
-    );
-
-    if (match) {
-      pumpSelect.value = match.value;
-      updateWaterOptions(index);
-    }
-  });
 }
 
 function refreshPumpOptions(index) {
