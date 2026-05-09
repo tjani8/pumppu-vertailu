@@ -498,38 +498,36 @@ function enableTraceHighlight(chartId) {
 
   const chart = document.getElementById(chartId);
 
-  chart.on('plotly_hover', function(data) {
+  chart.on("plotly_hover", function(eventData) {
 
-    const hoveredTrace = data.points[0].curveNumber;
+    const hoveredTrace = eventData.points[0].curveNumber;
+    const traceCount = chart.data.length;
 
     const update = {
       opacity: [],
-      'line.width': []
+      "line.width": []
     };
 
-    const traceCount = data.graphDiv.data.length;
-
     for (let i = 0; i < traceCount; i++) {
-
       if (i === hoveredTrace) {
         update.opacity.push(1.0);
-        update['line.width'].push(6);
+        update["line.width"].push(6);
       } else {
         update.opacity.push(0.15);
-        update['line.width'].push(3);
+        update["line.width"].push(3);
       }
     }
 
     Plotly.restyle(chart, update);
   });
 
-  chart.on('plotly_unhover', function(data) {
+  chart.on("plotly_unhover", function() {
 
-    const traceCount = data.graphDiv.data.length;
+    const traceCount = chart.data.length;
 
     const update = {
       opacity: Array(traceCount).fill(1),
-      'line.width': Array(traceCount).fill(4)
+      "line.width": Array(traceCount).fill(4)
     };
 
     Plotly.restyle(chart, update);
