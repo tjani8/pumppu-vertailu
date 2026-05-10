@@ -3,7 +3,7 @@ let allPumps = [];
 let visibleComparisons = 2;
 const maxComparisons = 6;
 const csvUrl =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzUjGukV__4N0fx4mUCQuTIt_Fskg7jPqHNawq_bF2H4cA4i_ur5nyw9QPtyptMfe8PaRHl4upB1HS/pub?gid=893857219&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSxw1z_hRdJPB-RaG0S8L2mYCamIzfhXjwGNKTI5I-HY_5ROisuJrS7fDlRpiBWMDQ9ZU9Gsv4VZzM/pub?gid=0&single=true&output=csv";
 const comparisonColors = [
   "#60a5fa",
   "#fb923c",
