@@ -284,10 +284,10 @@ function updateWaterOptions(index) {
 
 function updateNote(index) {
   const pump = document.getElementById(`pumpSelect${index}`).value;
-  const water = document.getElementById(`waterSelect${index}`).value;
+  const water = Number(document.getElementById(`waterSelect${index}`).value);
   const noteDiv = document.getElementById(`note${index}`);
 
-  if (!pump || !water) {
+  if (!pump || isNaN(water)) {
     noteDiv.textContent = "";
     return;
   }
@@ -352,16 +352,16 @@ function updateCharts() {
 
   for (let i = 0; i < 6; i++) {
     const pump = document.getElementById(`pumpSelect${i}`).value;
-    const water = document.getElementById(`waterSelect${i}`).value;
+	const water = Number(document.getElementById(`waterSelect${i}`).value);
 
-    if (pump && water) {
-      selections.push({
+	if (pump && !isNaN(water)) {
+	  selections.push({
 		pump,
 		water,
 		color: comparisonColors[i],
 		index: i
 	  });
-    }
+	}
   }
 
   drawPowerChart(selections);
@@ -570,7 +570,7 @@ function drawCustomLegend(selections) {
   selections.forEach((selection, index) => {
     const item = document.createElement("div");
     item.className = "legend-item";
-    item.textContent = `${selection.pump} / ${selection.water}`;
+    item.textContent = `${selection.pump} / ${selection.water} °C`;
     item.style.borderLeft = `6px solid ${selection.color}`;
 
     item.addEventListener("mouseenter", () => {
