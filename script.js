@@ -2,8 +2,9 @@ let rawData = [];
 let allPumps = [];
 let visibleComparisons = 2;
 const maxComparisons = 6;
-const csvUrl =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSxw1z_hRdJPB-RaG0S8L2mYCamIzfhXjwGNKTI5I-HY_5ROisuJrS7fDlRpiBWMDQ9ZU9Gsv4VZzM/pub?gid=0&single=true&output=csv";
+
+// const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2eKLglTXdwv5Bk61gSEEmupN1EoJ5WQ8Dls3XAtc0fnFkgi2ITXJJFDUadwKxEZ2EO6Bj-X_6xeY5/pub?output=csv";
+
 const comparisonColors = [
   "#60a5fa",
   "#fb923c",
@@ -44,22 +45,22 @@ function copyShareLink() {
 }
 
 
-// Papa.parse("data.csv", {
-Papa.parse(csvUrl, {
+Papa.parse("data.csv", {
+// Papa.parse(csvUrl, {
   download: true,
   header: true,
   complete: function(results) {
 
 	rawData = results.data.map(row => ({
 	  pumppu: row["Pumppu"],
-	  vesi: row["Vesi"],
+	  vesi: Number(row["Vesi"]),
 	  ulko: Number(row["Ulko"]),
-	  teho: Number(row["Teho"]),
-	  input: Number(row["Input"]),
-	  cop: Number(row["COP"]),
+	  teho: parseFloat(String(row["Teho"]).replace(",", ".")),
+	  cop: parseFloat(String(row["COP"]).replace(",", ".")),
 	  huomautus: row["Huomautus"]
 	})).filter(r => !isNaN(r.ulko));
 	
+	// console.log(rawData);
 	
     initControls();
 	updateInfoCard();
@@ -267,14 +268,14 @@ function updateWaterOptions(index) {
   waters.forEach(water => {
     const option = document.createElement("option");
     option.value = water;
-    option.textContent = water;
+    option.textContent = `${water} °C`;
     waterSelect.appendChild(option);
   });
 
   if (waters.includes(previousWater)) {
     waterSelect.value = previousWater;
-  } else if (waters.includes("35 °C")) {
-	  waterSelect.value = "35 °C";
+  } else if (waters.includes(35)) {
+	  waterSelect.value = 35;
   } else if (waters.length > 0) {
     waterSelect.value = waters[0];
   }
@@ -283,10 +284,10 @@ function updateWaterOptions(index) {
 
 function updateNote(index) {
   const pump = document.getElementById(`pumpSelect${index}`).value;
-  const water = document.getElementById(`waterSelect${index}`).value;
+  const water = Number(document.getElementById(`waterSelect${index}`).value);
   const noteDiv = document.getElementById(`note${index}`);
 
-  if (!pump || !water) {
+  if (!pump || isNaN(water)) {
     noteDiv.textContent = "";
     return;
   }
@@ -351,16 +352,16 @@ function updateCharts() {
 
   for (let i = 0; i < 6; i++) {
     const pump = document.getElementById(`pumpSelect${i}`).value;
-    const water = document.getElementById(`waterSelect${i}`).value;
+	const water = Number(document.getElementById(`waterSelect${i}`).value);
 
-    if (pump && water) {
-      selections.push({
+	if (pump && !isNaN(water)) {
+	  selections.push({
 		pump,
 		water,
 		color: comparisonColors[i],
 		index: i
 	  });
-    }
+	}
   }
 
   drawPowerChart(selections);
@@ -388,7 +389,7 @@ function drawCopChart(selections) {
 
       mode: "lines+markers",
 
-      name: `${selection.pump} / ${selection.water}`,
+      name: `${selection.pump} / ${selection.water} °C`,
 
       hovertemplate:
         "<b>%{fullData.name}</b><br>" +
@@ -483,7 +484,7 @@ function drawPowerChart(selections) {
 
       mode: "lines+markers",
 
-      name: `${selection.pump} / ${selection.water}`,
+      name: `${selection.pump} / ${selection.water} °C`,
 
       hovertemplate:
         "<b>%{fullData.name}</b><br>" +
@@ -567,7 +568,7 @@ function drawCustomLegend(selections) {
   selections.forEach((selection, index) => {
     const item = document.createElement("div");
     item.className = "legend-item";
-    item.textContent = `${selection.pump} / ${selection.water}`;
+    item.textContent = `${selection.pump} / ${selection.water} °C`;
     item.style.borderLeft = `6px solid ${selection.color}`;
 
     item.addEventListener("mouseenter", () => {

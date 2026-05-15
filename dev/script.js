@@ -60,7 +60,7 @@ Papa.parse("data.csv", {
 	  huomautus: row["Huomautus"]
 	})).filter(r => !isNaN(r.ulko));
 	
-	console.log(rawData);
+	// console.log(rawData);
 	
     initControls();
 	updateInfoCard();
